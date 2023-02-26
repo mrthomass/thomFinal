@@ -22,6 +22,28 @@ int main(int argc, char *argv[])
 		return(2);
 	}
 	
+	// STRAIGHTEN ALL THIS INFORMATION UP
+	
+	long sizeFileArg = strlen(argv[1]);
+	if (argv[1][sizeFileArg - 1] == 'a')
+	{
+	  printf("this is a fasta file.\n");
+	}
+	if (argv[1][sizeFileArg - 1] == 'q')
+	{
+	  printf("this is a fastq file.\n");
+	  // since unsupported at this time
+	  fclose(f);
+	  return(0);
+	}
+	if (argv[1][sizeFileArg - 1] != 'q' && argv[1][sizeFileArg - 1] != 'a')
+	{
+	  printf("INPUT FILE TYPE UNKNOWN\n");
+	  fclose(f);
+	  return(4);
+	}
+	
+	// ^^ STRAIGHTEN ALL THIS INFORMATION UP
 	
 	short kmer;
 	sscanf(argv[3], "%hi", &kmer);
