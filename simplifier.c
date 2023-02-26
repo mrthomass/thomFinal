@@ -6,9 +6,9 @@
 
 int main(int argc, char *argv[])
 {
-  if (argc < 2)
+  if (argc < 3)
   {
-    printf("NEED BINARY LONG LONG FILE ARGUMENT\n");
+    printf("NEED BINARY LONG LONG FILE ARGUMENT FOR INPUT AND TEXT FILE AS OUTPUT\n");
     return(1);
   }
   
@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
     return(2);
   }
   
-  FILE *out = fopen("testOrg.thom", "w");
+  FILE *out = fopen(argv[2], "w");
   
   unsigned long long hold; 
   // fscanf(inp, "%c\n", &hold);

@@ -3,6 +3,7 @@
 #include <string.h>
 
 // this function gets kmers from reads in fasta format
+unsigned long long change(char *inp);
 
 int main(int argc, char *argv[])
 {
@@ -31,13 +32,14 @@ int main(int argc, char *argv[])
     return(3);
   }
   
-  FILE *opf = fopen(argv[2], "w");
+  FILE *opf = fopen(argv[2], "wb");
 	
 
 	long holdPos;
 	char checkChar;
 	char *printer = malloc(sizeof(char) * kmer);
   short printOp = 1;
+  unsigned long long cap;
 
 	
 	while (!feof(f))
@@ -57,7 +59,7 @@ int main(int argc, char *argv[])
 			for (int i = 0; i < kmer; i++)
 			{
 			  fscanf(f, "%c", &printer[i]);
-			  
+			  // some ambiguity here, if there was another major error it would notice
 			  if (printer[i] == 'N' || printer[i] > 85)
 			  {
 			    printOp = 0;
@@ -67,8 +69,9 @@ int main(int argc, char *argv[])
 
 			if (printOp == 1)
 			{
-			  fprintf(opf, "%s\n", printer);
-			  // instead we want to print to a binary file here
+			  cap = change(printer);
+			  fwrite(&cap, sizeof(unsigned long long), 1, opf);
+			  // this is where we will instead print to a binary file
 			}
 			else
 			{
@@ -87,4 +90,14 @@ int main(int argc, char *argv[])
 	fclose(opf);
 	free(printer);
 
+}
+
+unsigned long long change(char *inp)
+{
+  unsigned long long opt = 0;
+  for (int i = 0; i < strlen(inp); i++)
+  {
+    opt = opt + inp[i] * 4 * i;
+  }
+  return(opt);
 }
