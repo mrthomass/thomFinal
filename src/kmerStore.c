@@ -25,10 +25,6 @@ int main(int argc, char *argv[])
 	// STRAIGHTEN ALL THIS INFORMATION UP
 	
 	long sizeFileArg = strlen(argv[1]);
-	if (argv[1][sizeFileArg - 1] == 'a')
-	{
-	  printf("this is a fasta file.\n");
-	}
 	if (argv[1][sizeFileArg - 1] == 'q')
 	{
 	  printf("this is a fastq file.\n");

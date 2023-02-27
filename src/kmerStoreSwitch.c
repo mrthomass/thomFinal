@@ -3,9 +3,12 @@
 #include <string.h>
 
 // this function gets kmers from reads in fasta format
-unsigned long long change(char *inp);
-int getFasta(FILE *inp, FILE *opt, short k);
-int getFastq(FILE *inp, FILE *opt, short k);
+unsigned long long changeLL(char *inp);
+unsigned int changeI(char *inp);
+int getFastaLL(FILE *inp, FILE *opt, short k);
+int getFastaI(FILE *inp, FILE *opt, short k);
+int getFastqLL(FILE *inp, FILE *opt, short k);
+int getFastqI(FILE *inp, FILE *opt, short k);
 
 int main(int argc, char *argv[])
 {
@@ -40,13 +43,29 @@ int main(int argc, char *argv[])
 	if (argv[1][sizeFileArg - 1] == 'a')
 	{
 	  // run the fasta code
-	  getFasta(f, opf, kmer);
-	  // maybe check for error here too...
+	  if (kmer > 16)
+	  {
+	    getFastaLL(f, opf, kmer);
+	    printf("USING STORAGE LESS MODE\n"); // REMOVE REMOVE REMOVE
+	  }
+	  else
+	  {
+	    getFastaI(f, opf, kmer);
+	    printf("USING STORAGE LESS MODE\n"); // REMOVE REMOVE REMOVE
+	  }
+	  
 	}
 	if (argv[1][sizeFileArg - 1] == 'q')
 	{
 	  // run the fastq code
-	  getFastq(f, opf, kmer);
+	  if (kmer > 16)
+	  {
+	    getFastqLL(f, opf, kmer);
+	  }
+	  else
+	  {
+	    getFastqI(f, opf, kmer);
+	  }
 	  
 	}
 	if (argv[1][sizeFileArg - 1] != 'q' && argv[1][sizeFileArg - 1] != 'a')
@@ -62,8 +81,9 @@ int main(int argc, char *argv[])
 	return(0);
 }
 
+
 // this file converts a max-32mer into a long long easily storeable
-unsigned long long change(char *inp)
+unsigned long long changeLL(char *inp)
 {
   unsigned long long opt = 0;
   for (int i = 0; i < strlen(inp); i++)
@@ -73,8 +93,18 @@ unsigned long long change(char *inp)
   return(opt);
 }
 
+unsigned int changeI(char *inp)
+{
+  unsigned int opt = 0;
+  for (int i = 0; i < strlen(inp); i++)
+  {
+    opt = opt + inp[i] * 4 * i;
+  }
+  return(opt);
+}
+
 // this file does the heavy lifting if the input is a `fastA` file
-int getFasta(FILE *inp, FILE *opt, short k)
+int getFastaLL(FILE *inp, FILE *opt, short k)
 {
   long holdPos;
   char checkChar;
@@ -110,8 +140,64 @@ int getFasta(FILE *inp, FILE *opt, short k)
       
       if (printOp == 1)
       {
-        cap = change(printer);
+        cap = changeLL(printer);
         fwrite(&cap, sizeof(unsigned long long), 1, opt);
+        // this is where we will instead print to a binary file
+      }
+      else
+      {
+        printOp = 1;
+      }
+      
+      
+      fseek(inp, holdPos + 1, SEEK_SET); // go back
+    }
+    
+    fscanf(inp, "%*[^\n]\n");
+    
+  }
+  free(printer);
+  return(0);
+}
+
+int getFastaI(FILE *inp, FILE *opt, short k)
+{
+  long holdPos;
+  char checkChar;
+  char *printer = malloc(sizeof(char) * k);
+  short printOp = 1;
+  unsigned int cap;
+  
+  
+  while (!feof(inp))
+  {
+    
+    fscanf(inp, ">%*[^\n]\n");
+    checkChar = 'a';
+    
+    while (checkChar != 10) 
+    {
+      
+      holdPos = ftell(inp);
+      fseek(inp, holdPos + k, SEEK_SET);
+      fscanf(inp, "%c", &checkChar);
+      fseek(inp, holdPos, SEEK_SET);
+      
+      for (int i = 0; i < k; i++)
+      {
+        fscanf(inp, "%c", &printer[i]);
+        // some ambiguity here, if there was another major error it would notice
+        if (printer[i] == 'N' || printer[i] > 85)
+        {
+          printOp = 0;
+          break;
+        }
+      }
+      
+      if (printOp == 1)
+      {
+        cap = changeI(printer);
+        fwrite(&cap, sizeof(unsigned int), 1, opt);
         // this is where we will instead print to a binary file
       }
       else
@@ -132,7 +218,7 @@ int getFasta(FILE *inp, FILE *opt, short k)
 
 
 // this file does the heavy lifting if the input is a `fastQ` file
-int getFastq(FILE *inp, FILE *opt, short k)
+int getFastqLL(FILE *inp, FILE *opt, short k)
 {
   long holdPos;
   char checkChar;
@@ -168,8 +254,64 @@ int getFastq(FILE *inp, FILE *opt, short k)
       
       if (printOp == 1)
       {
-        cap = change(printer);
+        cap = changeLL(printer);
         fwrite(&cap, sizeof(unsigned long long), 1, opt);
+        // this is where we will instead print to a binary file
+      }
+      else
+      {
+        printOp = 1;
+      }
+      
+      
+      fseek(inp, holdPos + 1, SEEK_SET); // go back
+    }
+    
+    fscanf(inp, "%*[^\n]\n%*[^\n]\n%*[^\n]\n"); // this is whats different between fasta
+    
+  }
+  free(printer);
+  return(0);
+}
+
+int getFastqI(FILE *inp, FILE *opt, short k)
+{
+  long holdPos;
+  char checkChar;
+  char *printer = malloc(sizeof(char) * k);
+  short printOp = 1;
+  unsigned int cap;
+  
+  
+  while (!feof(inp))
+  {
+    
+    fscanf(inp, "@%*[^\n]\n"); // change here too
+    checkChar = 'a';
+    
+    while (checkChar != 10) 
+    {
+      
+      holdPos = ftell(inp);
+      fseek(inp, holdPos + k, SEEK_SET);
+      fscanf(inp, "%c", &checkChar);
+      fseek(inp, holdPos, SEEK_SET);
+      
+      for (int i = 0; i < k; i++)
+      {
+        fscanf(inp, "%c", &printer[i]);
+        // some ambiguity here, if there was another major error it would notice
+        if (printer[i] == 'N' || printer[i] > 85)
+        {
+          printOp = 0;
+          break;
+        }
+      }
+      
+      if (printOp == 1)
+      {
+        cap = changeI(printer);
+        fwrite(&cap, sizeof(unsigned int), 1, opt);
         // this is where we will instead print to a binary file
       }
       else
