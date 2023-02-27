@@ -1,0 +1,9 @@
+## this file compiles all the src code into executables
+mkdir bin
+gcc src/encodeCompress.c -o bin/encodeCompress
+gcc src/getKmer.c -o bin/getKmer
+gcc src/kmerStore.c -o bin/kmerStore
+gcc src/kmerStoreSwitch.c -o bin/kmerStoreSwitch
+gcc src/printBinaryLL.c	-o bin/printBinaryLL
+gcc src/simplifier.c -o bin/simplifier
+gcc src/sortFile.c -o bin/sortFile
