@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
   unsigned long long *toSort = malloc(sizeof(unsigned long long) * nll);
   if (toSort == NULL)
   {
-    fclose(output);
+    fclose(input);
     return(3);
   }
   fread(toSort, sizeof(unsigned long long), nll, input);
