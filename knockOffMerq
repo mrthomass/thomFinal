@@ -75,5 +75,11 @@ then
   exit 9
 fi
 
-## ^^ this completes the getting ready step, now we must just work on output
+./src/analysis.R $1.csv $2.csv
+if [ $? -ne 0 ]
+then 
+  echo Error: plot Rscript failed
+  exit 10
+fi
+
 exit 0
