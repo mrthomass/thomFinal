@@ -37,14 +37,14 @@ then
   exit 4
 fi
 
-./bin/sortFile temp.bin
+./bin/sortFileTemp temp.bin $3
 if [ $? -ne 0 ]
 then
   echo Error: sortFile run for $1
   exit 5
 fi
 
-./bin/simplifier temp.bin $1.csv
+./bin/simplifier temp.bin $1.csv $3
 if [ $? -ne 0 ]
 then 
   echo Error: simplifier run for $1
@@ -61,14 +61,14 @@ then
   exit 7
 fi
 
-./bin/sortFile temp.bin
+./bin/sortFileTemp temp.bin $3
 if [ $? -ne 0 ]
 then
   echo Error: sortFile run for $1
   exit 8
 fi
 
-./bin/simplifier temp.bin $2.csv
+./bin/simplifier temp.bin $2.csv $3
 if [ $? -ne 0 ]
 then 
   echo Error: simplifier run for $2

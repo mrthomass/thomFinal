@@ -3,6 +3,12 @@
 #include <string.h>
 
 // this function gets kmers from reads in fasta format
+// then it exports them to either a 4 byte unsigned int binary file or
+// a 8 byte unsigned long binary file depending on the kmer size (> 16 or not)
+
+// looming bug, will only stop while loop IF there is a newline '\n' at end of input file
+
+
 unsigned long long changeLL(char *inp);
 unsigned int changeI(char *inp);
 int getFastaLL(FILE *inp, FILE *opt, short k);
@@ -46,12 +52,10 @@ int main(int argc, char *argv[])
 	  if (kmer > 16)
 	  {
 	    getFastaLL(f, opf, kmer);
-	    printf("USING STORAGE LESS MODE\n"); // REMOVE REMOVE REMOVE
 	  }
 	  else
 	  {
 	    getFastaI(f, opf, kmer);
-	    printf("USING STORAGE LESS MODE\n"); // REMOVE REMOVE REMOVE
 	  }
 	  
 	}
@@ -168,6 +172,7 @@ int getFastaI(FILE *inp, FILE *opt, short k)
   short printOp = 1;
   unsigned int cap;
   
+  printf("USING SMALLER FORMAT STORESWITCH\n");
   
   while (!feof(inp))
   {

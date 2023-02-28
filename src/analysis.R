@@ -1,7 +1,22 @@
+
+## this is gibberish right now
 getwd()
 setwd(
-  "~/Documents/class/bio478/leberlesTest/"
+  "~/Documents/class/bio478/thomFinal/test/"
 )
+
+  A <- read.csv("samplereads.fa.csv", header = FALSE)
+  B <- read.csv("sampleRef.fa.csv", header = FALSE)
+
+ggplot2::ggplot() + ggplot2::geom_histogram(ggplot2::aes(x = A$V2), fill = "#f000a0", color = "#2f2f2f",alpha = 0.5, binwidth = 1000)
+  ggplot2::geom_histogram(ggplot2::aes(x = B$V2), fill = "#a0f0d0", binwidth = 1000)
+
+
+ggplot2::ggplot() + ggplot2::geom_histogram(ggplot2::aes(x = B$V2), fill = "#a0f0d0", color = "black", binwidth = 10)
+
+
+
+
 
 A <- read.csv("hmeph_T_S-contig.csv", header = FALSE)
 B <- read.csv("hmephReads.csv", header = FALSE)
