@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
   {
     unsigned long long hold;
     
-    for (int i = 0; i < 10; i++)
+    while (!feof(input))
     {
       fread(&hold, sizeof(unsigned long long), 1, input);
       printf("%llu ", hold);
@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
   else
   {
     unsigned int hold;
-    for (int i = 0; i < 10; i++)
+    while (!feof(input))
     {
       fread(&hold, sizeof(unsigned int), 1, input);
       printf("%u ", hold);

@@ -15,6 +15,7 @@ int getFastaLL(FILE *inp, FILE *opt, short k);
 int getFastaI(FILE *inp, FILE *opt, short k);
 int getFastqLL(FILE *inp, FILE *opt, short k);
 int getFastqI(FILE *inp, FILE *opt, short k);
+unsigned int powFour(int a);
 
 int main(int argc, char *argv[])
 {
@@ -86,13 +87,15 @@ int main(int argc, char *argv[])
 }
 
 
-// this file converts a max-32mer into a long long easily storeable
+// encoder functions::
 unsigned long long changeLL(char *inp)
 {
   unsigned long long opt = 0;
+  unsigned long scale = 1;
   for (int i = 0; i < strlen(inp); i++)
   {
-    opt = opt + inp[i] * 4 * i;
+    opt = opt + (inp[i]%5 + inp[i]%2 - 1) * scale;
+    scale = scale * 4;
   }
   return(opt);
 }
@@ -100,12 +103,17 @@ unsigned long long changeLL(char *inp)
 unsigned int changeI(char *inp)
 {
   unsigned int opt = 0;
+  unsigned int scale = 1;
   for (int i = 0; i < strlen(inp); i++)
   {
-    opt = opt + inp[i] * 4 * i;
+    opt = opt + (inp[i]%5 + inp[i]%2 - 1) * scale;
+    scale = scale * 4;
   }
   return(opt);
 }
+// encoder functions::
+
+
 
 // this file does the heavy lifting if the input is a `fastA` file
 int getFastaLL(FILE *inp, FILE *opt, short k)
@@ -171,8 +179,7 @@ int getFastaI(FILE *inp, FILE *opt, short k)
   char *printer = malloc(sizeof(char) * k);
   short printOp = 1;
   unsigned int cap;
-  
-  printf("USING SMALLER FORMAT STORESWITCH\n");
+
   
   while (!feof(inp))
   {

@@ -3,7 +3,8 @@
 
 // this function takes in a binary of long longs and sorts them
   
-int cmpfunc (const void * a, const void * b);
+int cmpfuncL(const void * a, const void * b);
+int cmpfuncI(const void * a, const void * b);
 
 int main(int argc, char *argv[])
 {
@@ -48,7 +49,7 @@ int main(int argc, char *argv[])
     fclose(input);
     
     FILE *output = fopen(argv[1], "wb");
-    qsort(toSort, nll, sizeof(unsigned long long), cmpfunc);
+    qsort(toSort, nll, sizeof(unsigned long long), cmpfuncL);
     fwrite(toSort, sizeof(unsigned long long), nll, output);
     free(toSort);
     fclose(output);
@@ -68,7 +69,7 @@ int main(int argc, char *argv[])
     fclose(input);
     
     FILE *output = fopen(argv[1], "wb");
-    qsort(toSort, nll, sizeof(unsigned int), cmpfunc);
+    qsort(toSort, nll, sizeof(unsigned int), cmpfuncI);
     fwrite(toSort, sizeof(unsigned int), nll, output);
     free(toSort);
     fclose(output);
@@ -77,7 +78,14 @@ int main(int argc, char *argv[])
   return(0);
 }
 
-int cmpfunc (const void * a, const void * b) 
+int cmpfuncL(const void * a, const void * b) 
 {
-  return ( *(long long int*)a - *(long long int*)b );
+  const unsigned long *A = a, *B = b;
+  return((*A > *B) - (*A < *B));
+}
+
+int cmpfuncI(const void * a, const void * b) 
+{
+  const unsigned int *A = a, *B = b;
+  return((*A > *B) - (*A < *B));
 }

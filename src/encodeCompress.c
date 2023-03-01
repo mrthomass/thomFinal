@@ -8,7 +8,7 @@ unsigned long long change(char *inp);
 
 int main(int argc, char *argv[])
 {
-  if (argc < 3)
+  if (argc < 4)
   {
     // need the input file, output file 
     printf("File Argument Required\n");
@@ -22,9 +22,21 @@ int main(int argc, char *argv[])
     return(2);
   }
   
+  
+  if (argv[3] != 'l' && argv[3] != 'i')
+  {
+    printf("INVALID Type Output\n");
+    fclose(input);
+    return(3);
+  }
+  
   FILE *output = fopen(argv[2], "wb");
   
+  
+  
+  
   char *hold = malloc(sizeof(char) * 21);
+  
   unsigned long long cap;
   
   while (!feof(input))
@@ -42,9 +54,12 @@ int main(int argc, char *argv[])
 unsigned long long change(char *inp)
 {
   unsigned long long opt = 0;
+  unsigned long scale = 1;
   for (int i = 0; i < strlen(inp); i++)
   {
-    opt = opt + inp[i] * 4 * i;
+    opt = opt + (inp[i]%5 + inp[i]%2 - 1) * scale;
+    scale = scale * 4;
   }
   return(opt);
 }
+

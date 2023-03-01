@@ -47,5 +47,6 @@ int main(int argc, char *argv[])
 
 int cmpfunc (const void * a, const void * b) 
 {
-  return ( *(long long int*)a - *(long long int*)b );
+  const long *A = a, *B = b;
+  return((*A > *B) - (*A < *B));
 }
